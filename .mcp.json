@@ -13,7 +13,7 @@
   "mcpServers": {
     "github": {
       "command": "gh",
-      "args": ["mcp-server"],
+      "args": ["mcp"],
       "env": {}
     },
     "prometheus": {
