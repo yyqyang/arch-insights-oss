@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "echo '📦 arch-insights-oss v1.0.0'"
+      },
+      {
+        "type": "command",
+        "command": "gh auth status --hostname github.com 2>/dev/null && echo '✅ GitHub: authenticated' || echo '⚠️  GitHub: not authenticated — run: gh auth login'"
+      },
+      {
+        "type": "command",
+        "command": "command -v npx >/dev/null 2>&1 && echo '✅ npx: available' || echo '⚠️  npx: not found — install Node.js for Prometheus/PagerDuty/Slack MCP servers'"
+      },
+      {
+        "type": "command",
+        "command": "if [ -n \"$PROMETHEUS_URL\" ]; then curl -sf \"${PROMETHEUS_URL}/-/ready\" >/dev/null 2>&1 && echo '✅ Prometheus: reachable' || echo '⚠️  Prometheus: configured but unreachable'; else echo 'ℹ️  Prometheus: not configured (set PROMETHEUS_URL to enable)'; fi"
+      }
+    ]
+  }
+}

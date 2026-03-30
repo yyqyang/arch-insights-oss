@@ -1,0 +1,177 @@
+# ─────────────────────────────────────────────────────────────
+# arch-insights-oss — Service Registry
+# ─────────────────────────────────────────────────────────────
+#
+# This file defines your organization's service catalog. It
+# replaces proprietary service registries (ServiceTree, Backstage,
+# OpsLevel, etc.) with a simple, version-controlled YAML file.
+#
+# The plugin reads this file to:
+#   • Route architecture questions to the right repos
+#   • Map feature areas to owning services
+#   • Look up team contacts and on-call rotations
+#   • Find monitoring dashboards for a given service
+#   • Trace cross-service dependencies
+#
+# Customize this file to match your organization's services.
+# ─────────────────────────────────────────────────────────────
+
+organization: "acme-corp"
+
+# ─────────────────────────────────────────────────────────────
+# Services
+# ─────────────────────────────────────────────────────────────
+# Each key is a unique service identifier used throughout the
+# plugin. Fields:
+#
+#   description       — Short human-readable summary
+#   language          — Primary language (typescript, java, python, go, etc.)
+#   repo              — GitHub org/repo (used by the GitHub MCP server)
+#   team              — Owning team (must match a key in `teams` below)
+#   dependencies      — List of service IDs or external systems this service calls
+#   docs_url          — Link to documentation (wiki, Notion, Confluence, etc.)
+#   monitoring        — Optional observability config:
+#       prometheus_job      — Prometheus job name for metrics queries
+#       grafana_dashboard   — Grafana dashboard slug or UID
+#       pagerduty_service   — PagerDuty service ID for incident lookup
+#
+services:
+
+  api-gateway:
+    description: "API gateway / BFF layer — routes and aggregates requests"
+    language: typescript
+    repo: "acme-corp/api-gateway"
+    team: platform
+    dependencies:
+      - user-service
+      - order-service
+      - notification-service
+      - search-service
+    docs_url: "https://github.com/acme-corp/api-gateway/wiki"
+    monitoring:
+      prometheus_job: "api-gateway"
+      grafana_dashboard: "api-gateway-overview"
+      pagerduty_service: "P123ABC"
+
+  user-service:
+    description: "User authentication and profile management"
+    language: java
+    repo: "acme-corp/user-service"
+    team: identity
+    dependencies:
+      - postgres
+      - redis
+    docs_url: "https://github.com/acme-corp/user-service/wiki"
+    monitoring:
+      prometheus_job: "user-service"
+      grafana_dashboard: "user-service-overview"
+      pagerduty_service: "P456DEF"
+
+  order-service:
+    description: "Order processing and fulfillment"
+    language: python
+    repo: "acme-corp/order-service"
+    team: commerce
+    dependencies:
+      - user-service
+      - payment-service
+      - kafka
+    docs_url: "https://github.com/acme-corp/order-service/wiki"
+    monitoring:
+      prometheus_job: "order-service"
+      grafana_dashboard: "order-service-overview"
+      pagerduty_service: "P789GHI"
+
+  payment-service:
+    description: "Payment processing integration (Stripe, etc.)"
+    language: java
+    repo: "acme-corp/payment-service"
+    team: commerce
+    dependencies:
+      - stripe-api
+    docs_url: "https://github.com/acme-corp/payment-service/wiki"
+    monitoring:
+      prometheus_job: "payment-service"
+      grafana_dashboard: "payment-service-overview"
+      pagerduty_service: "PABC123"
+
+  notification-service:
+    description: "Email, SMS, and push notification delivery"
+    language: typescript
+    repo: "acme-corp/notification-service"
+    team: platform
+    dependencies:
+      - user-service
+      - sendgrid-api
+      - firebase-fcm
+    docs_url: "https://github.com/acme-corp/notification-service/wiki"
+    monitoring:
+      prometheus_job: "notification-service"
+      grafana_dashboard: "notification-service-overview"
+
+  search-service:
+    description: "Full-text search powered by Elasticsearch"
+    language: go
+    repo: "acme-corp/search-service"
+    team: platform
+    dependencies:
+      - elasticsearch
+    docs_url: "https://github.com/acme-corp/search-service/wiki"
+    monitoring:
+      prometheus_job: "search-service"
+      grafana_dashboard: "search-service-overview"
+
+# ─────────────────────────────────────────────────────────────
+# Feature Areas
+# ─────────────────────────────────────────────────────────────
+# Maps high-level product features to the services that
+# implement them. When a user asks "how does authentication
+# work?", the plugin uses this mapping to focus on the right
+# repos and code paths.
+#
+feature_areas:
+
+  authentication:
+    - user-service
+    - api-gateway
+
+  checkout:
+    - order-service
+    - payment-service
+    - api-gateway
+
+  notifications:
+    - notification-service
+
+  search:
+    - search-service
+    - api-gateway
+
+  user-management:
+    - user-service
+
+  payments:
+    - payment-service
+    - order-service
+
+# ─────────────────────────────────────────────────────────────
+# Teams
+# ─────────────────────────────────────────────────────────────
+# Directory of teams that own services. Used to:
+#   • Look up Slack channels for cross-team questions
+#   • Find on-call contacts during incidents
+#   • Route design-review requests
+#
+teams:
+
+  platform:
+    slack_channel: "#platform-team"
+    oncall_rotation: "platform-oncall"
+
+  identity:
+    slack_channel: "#identity-team"
+    oncall_rotation: "identity-oncall"
+
+  commerce:
+    slack_channel: "#commerce-team"
+    oncall_rotation: "commerce-oncall"

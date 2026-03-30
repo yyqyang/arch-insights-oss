@@ -1,0 +1,24 @@
+{
+  "name": "arch-insights-oss",
+  "description": "Open-source architecture insights — trace code paths, investigate issues, and get design recommendations across multi-repo codebases using GitHub, Prometheus, PagerDuty, Slack, and more.",
+  "version": "1.0.0",
+  "author": {
+    "name": "yyqyang"
+  },
+  "keywords": [
+    "architecture",
+    "code-search",
+    "observability",
+    "incident-management",
+    "multi-repo",
+    "design-patterns"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yyqyang/arch-insights-oss"
+  },
+  "engines": {
+    "claude-code": ">=1.0.0"
+  }
+}

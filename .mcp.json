@@ -1,0 +1,43 @@
+{
+  "_comment": [
+    "arch-insights-oss MCP server configuration.",
+    "",
+    "Each server is optional — the plugin degrades gracefully if a server is unavailable.",
+    "Configure secrets via environment variables in your shell profile (.bashrc, .zshrc, etc.).",
+    "",
+    "The GitHub MCP server (gh mcp-server) is typically built-in to Claude Code.",
+    "It is listed here for completeness and for environments where it is not auto-registered.",
+    "",
+    "To verify which servers are active, run: scripts/check-prereqs.sh"
+  ],
+  "mcpServers": {
+    "github": {
+      "command": "gh",
+      "args": ["mcp-server"],
+      "env": {}
+    },
+    "prometheus": {
+      "command": "npx",
+      "args": ["-y", "poly-observability-mcp"],
+      "env": {
+        "PROMETHEUS_URL": "${PROMETHEUS_URL:-http://localhost:9090}",
+        "GRAFANA_URL": "${GRAFANA_URL:-http://localhost:3000}",
+        "GRAFANA_API_KEY": "${GRAFANA_API_KEY}"
+      }
+    },
+    "pagerduty": {
+      "command": "npx",
+      "args": ["-y", "pagerduty-mcp-server"],
+      "env": {
+        "PAGERDUTY_API_KEY": "${PAGERDUTY_API_KEY}"
+      }
+    },
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/slack-mcp-server"],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}"
+      }
+    }
+  }
+}
