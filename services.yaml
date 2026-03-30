@@ -57,6 +57,55 @@ services:
     docs_url: "https://github.com/yyqyang/arch-insights-oss"
 
   # ── RWLab org (Robot Wealth) ────────────────────────────────
+  # Research pods
+
+  macro-pod:
+    description: "Research on macro and structural trades"
+    language: r
+    repo: "RWLab/macro-pod"
+    team: rwlab
+    dependencies:
+      - rwRtools
+      - rwlab-helpers
+
+  crypto-pod:
+    description: "Research pod for crypto markets"
+    language: r
+    repo: "RWLab/crypto-pod"
+    team: rwlab
+    dependencies:
+      - rwRtools
+      - rwlab-helpers
+
+  equity-factors-pod:
+    description: "Research pod for US equity factors"
+    language: r
+    repo: "RWLab/equity-factors-pod"
+    team: rwlab
+    dependencies:
+      - rwRtools
+      - rwlab-helpers
+      - tlaqData
+
+  equity-stat-arb:
+    description: "Equity statistical arbitrage research pod"
+    language: r
+    repo: "RWLab/equity-stat-arb"
+    team: rwlab
+    dependencies:
+      - rwRtools
+      - rwlab-helpers
+
+  fx-pod:
+    description: "Research pod for FX trades"
+    language: r
+    repo: "RWLab/fx-pod"
+    team: rwlab
+    dependencies:
+      - rwRtools
+      - rwlab-helpers
+
+  # Tools & libraries
 
   rwRtools:
     description: "R tools for accessing Robot Wealth Lab datasets — equity factors, risk premia, research pod data"
@@ -67,6 +116,79 @@ services:
       - gcs-data-library
     docs_url: "https://github.com/RWLab/rwRtools"
 
+  rwlab-helpers:
+    description: "R helper functions for RWLab research workflows"
+    language: r
+    repo: "RWLab/rwlab-helpers"
+    team: rwlab
+    dependencies:
+      - rwRtools
+
+  rw-api-tools:
+    description: "Tools for using the RW API"
+    language: r
+    repo: "RWLab/rw-api-tools"
+    team: rwlab
+    dependencies: []
+
+  rw-portfolio-rwlab:
+    description: "Strategy descriptions, model portfolios, research and execution"
+    language: r
+    repo: "RWLab/rw-portfolio"
+    team: rwlab
+    dependencies:
+      - rwRtools
+
+  tools-and-techniques:
+    description: "Tools and techniques for trading and research"
+    language: r
+    repo: "RWLab/tools-and-techniques"
+    team: rwlab
+    dependencies:
+      - rwRtools
+
+  data-engineering-for-traders:
+    description: "Data engineering for traders"
+    language: r
+    repo: "RWLab/data-engineering-for-traders"
+    team: rwlab
+    dependencies: []
+
+  # Trading & execution
+
+  community-algos:
+    description: "Algos contributed by the RW community"
+    language: r
+    repo: "RWLab/community-algos"
+    team: rwlab
+    dependencies:
+      - rwRtools
+
+  sports-betting:
+    description: "Sports betting research"
+    language: r
+    repo: "RWLab/sports-betting"
+    team: rwlab
+    dependencies: []
+
+  zorro-tools:
+    description: "Zorro trading platform tools"
+    language: r
+    repo: "RWLab/zorro_tools"
+    team: rwlab
+    dependencies: []
+
+  # TLAQ (Trade Like a Quant)
+
+  Trade-Like-A-Quant:
+    description: "Code for the Trade Like a Quant bootcamp"
+    language: r
+    repo: "RWLab/Trade-Like-A-Quant"
+    team: rwlab
+    dependencies:
+      - tlaqData
+      - rwRtools
+
   tlaqData:
     description: "Data package for the Trade Like a Quant bootcamp"
     language: r
@@ -75,10 +197,31 @@ services:
     dependencies: []
     docs_url: "https://github.com/RWLab/tlaqData"
 
-  rwlab-helpers:
-    description: "R helper functions for RWLab research workflows"
+  tlaq-trading-app:
+    description: "Shiny dashboard for managing the TLAQ trading strategies"
     language: r
-    repo: "RWLab/rwlab-helpers"
+    repo: "RWLab/tlaq-trading-app"
+    team: rwlab
+    dependencies:
+      - tlaqData
+      - rwRtools
+
+  # Apps & dashboards
+
+  vix-basis-app:
+    description: "Interactive Shiny app for exploring the VIX basis trade"
+    language: r
+    repo: "RWLab/vix-basis-app"
+    team: rwlab
+    dependencies:
+      - rwRtools
+
+  # Pro research
+
+  RW-Pro-Research:
+    description: "Research for the RW Pro community"
+    language: r
+    repo: "RWLab/RW-Pro-Research"
     team: rwlab
     dependencies:
       - rwRtools
@@ -92,23 +235,56 @@ feature_areas:
     - rw-portfolio
     - rw-arb
     - event-edge
+    - community-algos
+    - rw-portfolio-rwlab
 
   stock-research:
     - event-edge
+    - equity-factors-pod
+    - equity-stat-arb
     - rwRtools
-    - tlaqData
+
+  macro-research:
+    - macro-pod
+    - rw-portfolio-rwlab
+
+  crypto-research:
+    - crypto-pod
+
+  fx-research:
+    - fx-pod
+
+  equity-factors:
+    - equity-factors-pod
+    - equity-stat-arb
 
   strategies:
     - rw-portfolio
     - rw-arb
+    - community-algos
+    - rw-portfolio-rwlab
 
   event-ingestion:
     - event-edge
 
   quant-research:
     - rwRtools
-    - tlaqData
     - rwlab-helpers
+    - tools-and-techniques
+    - data-engineering-for-traders
+    - rw-api-tools
+
+  tlaq:
+    - Trade-Like-A-Quant
+    - tlaqData
+    - tlaq-trading-app
+
+  vix-trading:
+    - vix-basis-app
+    - rw-portfolio
+
+  sports-betting:
+    - sports-betting
 
   ai-tooling:
     - arch-insights-oss
