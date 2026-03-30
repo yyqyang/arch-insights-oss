@@ -2,176 +2,126 @@
 # arch-insights-oss — Service Registry
 # ─────────────────────────────────────────────────────────────
 #
-# This file defines your organization's service catalog. It
-# replaces proprietary service registries (ServiceTree, Backstage,
-# OpsLevel, etc.) with a simple, version-controlled YAML file.
-#
-# The plugin reads this file to:
+# This file defines your service catalog. The plugin reads it to:
 #   • Route architecture questions to the right repos
 #   • Map feature areas to owning services
-#   • Look up team contacts and on-call rotations
-#   • Find monitoring dashboards for a given service
 #   • Trace cross-service dependencies
 #
-# Customize this file to match your organization's services.
 # ─────────────────────────────────────────────────────────────
 
-organization: "acme-corp"
+organization: "yyqyang"
 
 # ─────────────────────────────────────────────────────────────
 # Services
 # ─────────────────────────────────────────────────────────────
-# Each key is a unique service identifier used throughout the
-# plugin. Fields:
-#
-#   description       — Short human-readable summary
-#   language          — Primary language (typescript, java, python, go, etc.)
-#   repo              — GitHub org/repo (used by the GitHub MCP server)
-#   team              — Owning team (must match a key in `teams` below)
-#   dependencies      — List of service IDs or external systems this service calls
-#   docs_url          — Link to documentation (wiki, Notion, Confluence, etc.)
-#   monitoring        — Optional observability config:
-#       prometheus_job      — Prometheus job name for metrics queries
-#       grafana_dashboard   — Grafana dashboard slug or UID
-#       pagerduty_service   — PagerDuty service ID for incident lookup
-#
 services:
 
-  api-gateway:
-    description: "API gateway / BFF layer — routes and aggregates requests"
-    language: typescript
-    repo: "acme-corp/api-gateway"
-    team: platform
-    dependencies:
-      - user-service
-      - order-service
-      - notification-service
-      - search-service
-    docs_url: "https://github.com/acme-corp/api-gateway/wiki"
-    monitoring:
-      prometheus_job: "api-gateway"
-      grafana_dashboard: "api-gateway-overview"
-      pagerduty_service: "P123ABC"
+  # ── Personal repos ──────────────────────────────────────────
 
-  user-service:
-    description: "User authentication and profile management"
-    language: java
-    repo: "acme-corp/user-service"
-    team: identity
-    dependencies:
-      - postgres
-      - redis
-    docs_url: "https://github.com/acme-corp/user-service/wiki"
-    monitoring:
-      prometheus_job: "user-service"
-      grafana_dashboard: "user-service-overview"
-      pagerduty_service: "P456DEF"
-
-  order-service:
-    description: "Order processing and fulfillment"
+  event-edge:
+    description: "Event-driven stock research copilot — tracks news events, identifies cross-sector spillover patterns, generates trade memos"
     language: python
-    repo: "acme-corp/order-service"
-    team: commerce
+    repo: "yyqyang/event-edge"
+    team: personal
     dependencies:
-      - user-service
-      - payment-service
-      - kafka
-    docs_url: "https://github.com/acme-corp/order-service/wiki"
-    monitoring:
-      prometheus_job: "order-service"
-      grafana_dashboard: "order-service-overview"
-      pagerduty_service: "P789GHI"
+      - rw-portfolio
+      - postgresql
+      - claude-api
+      - voyageai
+    docs_url: "https://github.com/yyqyang/event-edge"
 
-  payment-service:
-    description: "Payment processing integration (Stripe, etc.)"
-    language: java
-    repo: "acme-corp/payment-service"
-    team: commerce
+  rw-portfolio:
+    description: "Automated quantitative trading bot — runs on GCP Cloud Functions, trades via Alpaca API, executes multiple independent strategies before market close"
+    language: python
+    repo: "yyqyang/rw-portfolio"
+    team: personal
     dependencies:
-      - stripe-api
-    docs_url: "https://github.com/acme-corp/payment-service/wiki"
-    monitoring:
-      prometheus_job: "payment-service"
-      grafana_dashboard: "payment-service-overview"
-      pagerduty_service: "PABC123"
+      - alpaca-api
+      - gcp-cloud-functions
+    docs_url: "https://github.com/yyqyang/rw-portfolio"
 
-  notification-service:
-    description: "Email, SMS, and push notification delivery"
-    language: typescript
-    repo: "acme-corp/notification-service"
-    team: platform
+  rw-arb:
+    description: "Arbitrage trading system"
+    language: python
+    repo: "yyqyang/rw-arb"
+    team: personal
     dependencies:
-      - user-service
-      - sendgrid-api
-      - firebase-fcm
-    docs_url: "https://github.com/acme-corp/notification-service/wiki"
-    monitoring:
-      prometheus_job: "notification-service"
-      grafana_dashboard: "notification-service-overview"
+      - rw-portfolio
 
-  search-service:
-    description: "Full-text search powered by Elasticsearch"
-    language: go
-    repo: "acme-corp/search-service"
-    team: platform
+  arch-insights-oss:
+    description: "Architecture insights plugin — trace code paths, investigate issues, get design recommendations across multi-repo codebases"
+    language: shell
+    repo: "yyqyang/arch-insights-oss"
+    team: personal
+    dependencies: []
+    docs_url: "https://github.com/yyqyang/arch-insights-oss"
+
+  # ── RWLab org (Robot Wealth) ────────────────────────────────
+
+  rwRtools:
+    description: "R tools for accessing Robot Wealth Lab datasets — equity factors, risk premia, research pod data"
+    language: r
+    repo: "RWLab/rwRtools"
+    team: rwlab
     dependencies:
-      - elasticsearch
-    docs_url: "https://github.com/acme-corp/search-service/wiki"
-    monitoring:
-      prometheus_job: "search-service"
-      grafana_dashboard: "search-service-overview"
+      - gcs-data-library
+    docs_url: "https://github.com/RWLab/rwRtools"
+
+  tlaqData:
+    description: "Data package for the Trade Like a Quant bootcamp"
+    language: r
+    repo: "RWLab/tlaqData"
+    team: rwlab
+    dependencies: []
+    docs_url: "https://github.com/RWLab/tlaqData"
+
+  rwlab-helpers:
+    description: "R helper functions for RWLab research workflows"
+    language: r
+    repo: "RWLab/rwlab-helpers"
+    team: rwlab
+    dependencies:
+      - rwRtools
 
 # ─────────────────────────────────────────────────────────────
 # Feature Areas
 # ─────────────────────────────────────────────────────────────
-# Maps high-level product features to the services that
-# implement them. When a user asks "how does authentication
-# work?", the plugin uses this mapping to focus on the right
-# repos and code paths.
-#
 feature_areas:
 
-  authentication:
-    - user-service
-    - api-gateway
+  trading:
+    - rw-portfolio
+    - rw-arb
+    - event-edge
 
-  checkout:
-    - order-service
-    - payment-service
-    - api-gateway
+  stock-research:
+    - event-edge
+    - rwRtools
+    - tlaqData
 
-  notifications:
-    - notification-service
+  strategies:
+    - rw-portfolio
+    - rw-arb
 
-  search:
-    - search-service
-    - api-gateway
+  event-ingestion:
+    - event-edge
 
-  user-management:
-    - user-service
+  quant-research:
+    - rwRtools
+    - tlaqData
+    - rwlab-helpers
 
-  payments:
-    - payment-service
-    - order-service
+  ai-tooling:
+    - arch-insights-oss
 
 # ─────────────────────────────────────────────────────────────
 # Teams
 # ─────────────────────────────────────────────────────────────
-# Directory of teams that own services. Used to:
-#   • Look up Slack channels for cross-team questions
-#   • Find on-call contacts during incidents
-#   • Route design-review requests
-#
 teams:
 
-  platform:
-    slack_channel: "#platform-team"
-    oncall_rotation: "platform-oncall"
+  personal:
+    slack_channel: ""
+    oncall_rotation: ""
 
-  identity:
-    slack_channel: "#identity-team"
-    oncall_rotation: "identity-oncall"
-
-  commerce:
-    slack_channel: "#commerce-team"
-    oncall_rotation: "commerce-oncall"
+  rwlab:
+    slack_channel: ""
+    oncall_rotation: ""
